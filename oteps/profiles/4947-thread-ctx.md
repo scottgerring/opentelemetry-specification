@@ -122,6 +122,10 @@ All pointer and validity updates use compiler fences (`atomic_signal_fence` or e
 
 Note: the SDK is free to re-use existing buffers to save allocations in this path.
 
+Note 2: Steps 1 and 5 are optional when the same context record is kept and mutated in-place.
+In such a situation, setting `valid` to 0 at the beginning of an update (with proper compile fences) and then back to 1 at he end of the update (with proper compile fences) is enough to protect the mutation of the record.
+(The alternative is also possible -- a record can be kept at `valid` set to 1 and the TLS pointer set to `null` and then reset back to point at the record at the end of the update.)
+
 #### 3. Context Detachment
 
 When a request context is no longer active on a thread, the SDK:
